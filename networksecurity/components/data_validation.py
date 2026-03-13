@@ -68,9 +68,12 @@ class DataValidation:
             drift_report_file_path = self.data_validation_config.drift_report_file_path
 
             #create dir
-            dir_path = os.path(drift_report_file_path)
+            dir_path = os.path.dirname(drift_report_file_path)
             os.makedirs(dir_path, exist_ok=True)
             write_yaml_file(file_path=drift_report_file_path, content=report)
+            logging.info(f"Data drift report saved at: {drift_report_file_path}")
+
+            return status
 
         except Exception as e:
             raise NetworkSecurityException(e, sys)
@@ -98,7 +101,18 @@ class DataValidation:
                 error_message = "Test dataframe does not contain all columns.\n"
 
             ## Datadrift
+            status = self.detect_dataset_drift(base_df=train_data_frame, current_df=test_data_frame)
 
+            dir_path = os.path.dirname(self.data_validation_config.valid_train_file_path)
+            os.makedirs(dir_path, exist_ok=True)
+
+            train_data_frame.to_csv(
+                self.data_validation_config.valid_train_file_path, index=False, header=True
+            )
+
+            test_data_frame.to_csv(
+                self.data_validation_config.valid_test_file_path, index=False, header=True
+            )
             
 
         except Exception as e:
