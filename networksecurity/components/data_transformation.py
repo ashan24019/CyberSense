@@ -1,5 +1,3 @@
-import sys
-import os
 import numpy as np
 import pandas as pd
 from sklearn.impute import KNNImputer
@@ -9,7 +7,6 @@ from networksecurity.constants.training_pipeline import TARGET_COLUMN
 
 from networksecurity.entity.artifact_entity import DataTransformationArtifact, DataValidationArtifact
 from networksecurity.entity.config_entity import DataTransformationConfig
-from networksecurity.exception.exception import NetworkSecurityException
 from networksecurity.logging.logger import logging
 from networksecurity.utils.main_utils.utils import save_object, save_numpy_array_data
 
