@@ -78,7 +78,7 @@ class DataValidation:
         except Exception as e:
             raise NetworkSecurityException(e, sys)
     
-    def initiate_data_validation(self) -> DataIngestionArtifact:
+    def initiate_data_validation(self) -> DataValidationArtifact:
         try:
             train_file_path = self.data_ingestion_artifact.trained_file_path
             test_file_path = self.data_ingestion_artifact.test_file_path
@@ -93,12 +93,12 @@ class DataValidation:
             status = self.validate_number_of_columns(dataframe=train_data_frame)
 
             if not status:
-                error_message = "Train dataframe does not contain all columns.\n"
+                error_message = f"Train dataframe does not contain all columns.\n"
             
             status = self.validate_number_of_columns(dataframe=test_data_frame)
 
             if not status:
-                error_message = "Test dataframe does not contain all columns.\n"
+                error_message = f"Test dataframe does not contain all columns.\n"
 
             ## Datadrift
             status = self.detect_dataset_drift(base_df=train_data_frame, current_df=test_data_frame)
@@ -113,7 +113,16 @@ class DataValidation:
             test_data_frame.to_csv(
                 self.data_validation_config.valid_test_file_path, index=False, header=True
             )
-            
+
+            data_validation_artifact = DataValidationArtifact(
+                validation_status=status,
+                valid_train_file_path=self.data_validation_config.valid_train_file_path,
+                valid_test_file_path=self.data_validation_config.valid_test_file_path,
+                invalid_train_file_path=self.data_validation_config.invalid_train_file_path,
+                invalid_test_file_path=self.data_validation_config.invalid_test_file_path,
+                drift_report_file_path=self.data_validation_config.drift_report_file_path
+            )
+            return data_validation_artifact
 
         except Exception as e:
             raise NetworkSecurityException(e, sys)
