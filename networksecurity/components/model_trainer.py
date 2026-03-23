@@ -16,11 +16,24 @@ from sklearn.ensemble import (
     RandomForestClassifier
 )
 import os
+import mlflow
 
 class ModelTrainer:
     def __init__(self, model_trainer_config:ModelTrainerConfig, data_transformation_artifact: DataTransformationArtifact):
         self.model_trainer_config = model_trainer_config
         self.data_transformation_artifact = data_transformation_artifact
+    
+    def track_mlflow(self, best_model, classificationmetric):
+        with mlflow.start_run():
+            f1_score = classificationmetric.f1_score
+            precision_score = classificationmetric.precision_score
+            recall_score = classificationmetric.recall_score
+
+            mlflow.log_metric('f1_score', f1_score)
+            mlflow.log_metric('precision', precision_score)
+            mlflow.log_metric('recall_score', recall_score)
+
+            mlflow.sklearn.log_model(best_model, "model")
 
     def train_model(self, X_train, y_train, X_test, y_test):
         models = {
@@ -64,6 +77,9 @@ class ModelTrainer:
         #predict
         y_train_pred = best_model.predict(X_train)
         classification_train_metrics = get_classification_score(y_true = y_train, y_pred=y_train_pred)
+
+        ## Track the mlflow 
+        self.track_mlflow(best_model, classification_train_metrics )
 
         y_test_pred = best_model.predict(X_test)
         classification_test_metrics = get_classification_score(y_true= y_test, y_pred=y_test_pred)
