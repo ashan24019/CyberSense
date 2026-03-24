@@ -18,6 +18,14 @@ from sklearn.ensemble import (
 import os
 import mlflow
 
+import dagshub
+dagshub.init(repo_owner='ashan24019', repo_name='CyberSense', mlflow=True)
+
+import mlflow
+with mlflow.start_run():
+  mlflow.log_param('parameter name', 'value')
+  mlflow.log_metric('metric name', 1)
+
 class ModelTrainer:
     def __init__(self, model_trainer_config:ModelTrainerConfig, data_transformation_artifact: DataTransformationArtifact):
         self.model_trainer_config = model_trainer_config
