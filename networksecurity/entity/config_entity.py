@@ -8,14 +8,15 @@ class TrainingPipelineConfig:
         timestamp = timestamp.strftime("%m_%d_%Y_%H_%M_%S")
         self.pipeline_name = training_pipeline.PIPELINE_NAME
         self.artifacts_name = training_pipeline.ARTIFACT_DIR
-        self.artifacts_dir = os.path.join(self.artifacts_name, timestamp)
+        self.artifact_dir = os.path.join(self.artifacts_name, timestamp)
+        self.model_dir=os.path.join("final_model")
         self.timestamp: str=timestamp
 
 
 class DataIngestionConfig:
     def __init__(self, training_pipeline_config:TrainingPipelineConfig):
         self.data_ingestion_dir: str = os.path.join(
-            training_pipeline_config.artifacts_dir, training_pipeline.DATA_INGESTION_DATABASE_NAME
+            training_pipeline_config.artifact_dir, training_pipeline.DATA_INGESTION_DATABASE_NAME
         )
 
         self.feature_store_file_path: str = os.path.join(
@@ -39,7 +40,7 @@ class DataIngestionConfig:
 class DataValidationConfig:
     def __init__(self, training_pipeline_config:TrainingPipelineConfig):
         self.data_validation_dir: str = os.path.join(
-            training_pipeline_config.artifacts_dir, training_pipeline.DATA_VALIDATION_DIR_NAME
+            training_pipeline_config.artifact_dir, training_pipeline.DATA_VALIDATION_DIR_NAME
         )
         self.valid_data_dir: str = os.path.join(
             self.data_validation_dir, training_pipeline.DATA_VALIDATION_VALID_DIR
@@ -68,7 +69,7 @@ class DataValidationConfig:
 class DataTransformationConfig:
     def __init__(self,training_pipeline_config:TrainingPipelineConfig):
         self.data_transformation_dir: str = os.path.join(
-            training_pipeline_config.artifacts_dir,training_pipeline.DATA_TRANSFORMATION_DIR_NAME
+            training_pipeline_config.artifact_dir,training_pipeline.DATA_TRANSFORMATION_DIR_NAME
         )
 
         self.transformed_train_file_path: str = os.path.join(
@@ -89,7 +90,7 @@ class DataTransformationConfig:
 class ModelTrainerConfig: 
     def __init__(self, training_pipeline_config: TrainingPipelineConfig):
         self.model_trainer_dir: str = os.path.join(
-            training_pipeline_config.artifacts_dir, training_pipeline.MODEL_TRAINER_DIR_NAME
+            training_pipeline_config.artifact_dir, training_pipeline.MODEL_TRAINER_DIR_NAME
         )
 
         self.trained_model_file_path: str = os.path.join(
